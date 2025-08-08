@@ -3,7 +3,7 @@ const { supabase } = require('../services/supabase.service');
 const { pollCallStatus } = require('../cron/jobs'); // ✅ ADD THIS
 
 const VAPI_API_KEY = "d54b7858-f078-4b2e-9099-a47f0d46f86b";
-const VAPI_ASSISTANT_ID = "0d4ab2e6-ecd8-4862-aee2-afaf348716f5";
+const VAPI_ASSISTANT_ID = "56a8c116-17c9-4b86-b5f3-89045e58ff4c";
 const VAPI_PHONE_NUMBER_ID = "3e749354-aedf-4088-8470-972f289fec66";
 
 // const makeCall = async (req, res) => {
