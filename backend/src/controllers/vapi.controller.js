@@ -166,7 +166,7 @@ const makeCall = async (req, res) => {
         // ✅ Poll call status every 2 minutes (max 10 times)
         const intervalMs = 10 * 1000; // 10 seconds
         let retryCount = 0;
-        const maxRetries = 10;
+        const maxRetries = 40;
 
         const intervalId = setInterval(async () => {
             retryCount++;
