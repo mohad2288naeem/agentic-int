@@ -138,7 +138,7 @@ const Experts = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "available":
-        return "bg-success text-success-foreground";
+        return "bg-success/50 text-success-foreground";
       case "busy":
         return "bg-warning text-warning-foreground";
       case "offline":
@@ -155,7 +155,7 @@ const Experts = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">
-              Expert Management
+              Scheduler Experts
             </h1>
             <p className="text-muted-foreground">
               Manage your subject-matter experts and their availability
@@ -249,7 +249,7 @@ const Experts = () => {
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Filter by specialty" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-gray-100">
                 <SelectItem value="all">All Specialties</SelectItem>
                 <SelectItem value="AI">AI & Machine Learning</SelectItem>
                 <SelectItem value="Fintech">Fintech & Blockchain</SelectItem>
@@ -263,7 +263,7 @@ const Experts = () => {
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-gray-100">
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="available">Available</SelectItem>
                 <SelectItem value="busy">Busy</SelectItem>

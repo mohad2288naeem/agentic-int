@@ -94,7 +94,7 @@ const CreateAssistantForm = ({
       },
       voice: {
         provider: "azure",
-        voiceId: voice,
+        voiceId: "brian",
       },
       firstMessage: firstMessage,
     };
@@ -191,10 +191,10 @@ const CreateAssistantForm = ({
               <SelectTrigger id="voice">
                 <SelectValue placeholder="Select a voice" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="brian">Brian (Azure)</SelectItem>
-                <SelectItem value="emma">Emma (Azure)</SelectItem>
-                <SelectItem value="andrew">Andrew (Azure)</SelectItem>
+              <SelectContent className="bg-gray-100">
+                <SelectItem value="brian">Brian (11 Labs)</SelectItem>
+                <SelectItem value="emma">Emma (11 Labs)</SelectItem>
+                <SelectItem value="andrew">Andrew (11 Labs)</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -204,7 +204,7 @@ const CreateAssistantForm = ({
               <SelectTrigger id="model">
                 <SelectValue placeholder="Select a model" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-gray-100">
                 <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
                 <SelectItem value="gpt-4">GPT-4</SelectItem>
                 <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
@@ -283,15 +283,18 @@ export const Assistants = () => {
       <div className="mb-8">
         <h1 className="text-4xl font-bold">Assistants</h1>
         <p className="text-muted-foreground mt-2">
-          Manage your existing voice assistants or create a new one.
+          Create a new voice assistant or manage your existing ones.
         </p>
       </div>
 
-      <Tabs defaultValue="all">
+      <Tabs defaultValue="create">
         <TabsList>
-          <TabsTrigger value="all">All Assistants</TabsTrigger>
           <TabsTrigger value="create">Create New</TabsTrigger>
+          <TabsTrigger value="all">All Assistants</TabsTrigger>
         </TabsList>
+        <TabsContent value="create" className="mt-6">
+          <CreateAssistantForm onAssistantCreated={fetchAssistants} />
+        </TabsContent>
         <TabsContent value="all" className="mt-6">
           <Card>
             <CardHeader>
@@ -311,7 +314,6 @@ export const Assistants = () => {
                     <TableRow>
                       <TableHead>Name</TableHead>
                       <TableHead>Model</TableHead>
-                      <TableHead>Voice</TableHead>
                       <TableHead>Created At</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -331,12 +333,6 @@ export const Assistants = () => {
                           {assistant.model.model}
                         </TableCell>
                         <TableCell>
-                          <Badge variant="secondary">
-                            {assistant.voice.provider}
-                          </Badge>{" "}
-                          {assistant.voice.voiceId}
-                        </TableCell>
-                        <TableCell>
                           {new Date(assistant.createdAt).toLocaleDateString()}
                         </TableCell>
                       </TableRow>
@@ -346,9 +342,6 @@ export const Assistants = () => {
               )}
             </CardContent>
           </Card>
-        </TabsContent>
-        <TabsContent value="create" className="mt-6">
-          <CreateAssistantForm onAssistantCreated={fetchAssistants} />
         </TabsContent>
       </Tabs>
     </div>

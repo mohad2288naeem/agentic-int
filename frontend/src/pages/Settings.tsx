@@ -53,10 +53,9 @@ const Settings = () => {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-1">
             <TabsTrigger value="profile">Profile</TabsTrigger>
             {/* <TabsTrigger value="notifications">Notifications</TabsTrigger> */}
-            <TabsTrigger value="security">Security</TabsTrigger>
             {/* <TabsTrigger value="api">API Keys</TabsTrigger> */}
             {/* <TabsTrigger value="data">Data</TabsTrigger> */}
             {/* <TabsTrigger value="system">System</TabsTrigger>/ */}
@@ -234,84 +233,6 @@ const Settings = () => {
                       </div>
                       <Switch defaultChecked />
                     </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </TabsContent>
-
-          {/* Security Tab */}
-          <TabsContent value="security" className="space-y-6">
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center">
-                <Shield className="h-5 w-5 mr-2" />
-                Security Settings
-              </h3>
-
-              <div className="space-y-6">
-                <div>
-                  <h4 className="font-medium mb-3">Password</h4>
-                  <div className="space-y-3">
-                    <div className="space-y-2">
-                      <Label htmlFor="currentPassword">Current Password</Label>
-                      <Input id="currentPassword" type="password" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="newPassword">New Password</Label>
-                      <Input id="newPassword" type="password" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirmPassword">
-                        Confirm New Password
-                      </Label>
-                      <Input id="confirmPassword" type="password" />
-                    </div>
-                    <Button variant="outline">Update Password</Button>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-medium mb-3">
-                    Two-Factor Authentication
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">SMS Authentication</p>
-                        <p className="text-sm text-muted-foreground">
-                          Receive codes via text message
-                        </p>
-                      </div>
-                      <Switch />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Authenticator App</p>
-                        <p className="text-sm text-muted-foreground">
-                          Use Google Authenticator or similar
-                        </p>
-                      </div>
-                      <Switch />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-medium mb-3">Session Management</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Auto Logout</p>
-                        <p className="text-sm text-muted-foreground">
-                          Automatically log out after inactivity
-                        </p>
-                      </div>
-                      <Switch defaultChecked />
-                    </div>
-                    <Button variant="outline">
-                      <Lock className="h-4 w-4 mr-2" />
-                      End All Sessions
-                    </Button>
                   </div>
                 </div>
               </div>

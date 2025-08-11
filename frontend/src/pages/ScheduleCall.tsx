@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -64,6 +65,7 @@ interface CallFormData {
 }
 
 const ScheduleCallForm = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { admin, addScheduledCall } = useExpert();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -118,7 +120,8 @@ const ScheduleCallForm = () => {
       });
 
       if (!expertResponse.ok) {
-        throw new Error("Failed to create expert");
+        const errorData = await expertResponse.json();
+        throw new Error(errorData.error || "Failed to create expert");
       }
 
       const expertData = await expertResponse.json();
@@ -151,10 +154,19 @@ const ScheduleCallForm = () => {
         interviewTime: "",
         notes: "",
       });
+
+      navigate("/experts");
     } catch (error) {
+      const errorMessage =
+        error.message &&
+        error.message.includes("duplicate key value violates unique constraint")
+          ? "Expert Details already exists"
+          : error.message ||
+            "Failed to schedule the interview. Please try again.";
+
       toast({
         title: "Error",
-        description: "Failed to schedule the interview. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -463,14 +475,17 @@ export default function ScheduleCall() {
       <div className="mb-8">
         <h1 className="text-4xl font-bold">Calls</h1>
         <p className="text-muted-foreground mt-2">
-          View available phone numbers or schedule a new call.
+          Schedule a new call or view available phone numbers.
         </p>
       </div>
-      <Tabs defaultValue="numbers">
+      <Tabs defaultValue="schedule">
         <TabsList>
-          <TabsTrigger value="numbers">Available Phone Numbers</TabsTrigger>
           <TabsTrigger value="schedule">Schedule a Call</TabsTrigger>
+          <TabsTrigger value="numbers">Available Phone Numbers</TabsTrigger>
         </TabsList>
+        <TabsContent value="schedule" className="mt-6">
+          <ScheduleCallForm />
+        </TabsContent>
         <TabsContent value="numbers" className="mt-6">
           <Card>
             <CardHeader>
@@ -521,9 +536,6 @@ export default function ScheduleCall() {
               )}
             </CardContent>
           </Card>
-        </TabsContent>
-        <TabsContent value="schedule" className="mt-6">
-          <ScheduleCallForm />
         </TabsContent>
       </Tabs>
       <AssignAssistantModal

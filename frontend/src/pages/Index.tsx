@@ -2,7 +2,6 @@ import { KPICard } from "@/components/dashboard/KPICard";
 import { Calendar } from "@/components/dashboard/Calendar";
 import { UpcomingCalls } from "@/components/dashboard/UpcomingCalls";
 import { TranscriptsList } from "@/components/dashboard/TranscriptsList";
-import { TopAgents } from "@/components/dashboard/TopAgents";
 
 const Index = () => {
   return (
@@ -27,20 +26,19 @@ const Index = () => {
             <TranscriptsList />
           </div>
 
-          {/* Middle Column - Top Agents */}
+          {/* Middle Column - Upcoming Calls */}
           <div className="lg:col-span-1">
-            <TopAgents />
+            <UpcomingCalls />
           </div>
 
-          {/* Right Column - Calendar & Upcoming Calls */}
+          {/* Right Column - Calendar */}
           <div className="lg:col-span-1 space-y-6">
             <div>
               <h2 className="text-xl font-semibold text-foreground mb-4">
-                Upcoming Calls
+                Schedule
               </h2>
               <Calendar />
             </div>
-            <UpcomingCalls />
           </div>
         </div>
       </div>

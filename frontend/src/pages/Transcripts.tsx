@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Search,
@@ -29,6 +30,7 @@ import {
   Star,
   Eye,
   MoreHorizontal,
+  Copy,
 } from "lucide-react";
 import {
   Select,
@@ -43,6 +45,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 interface Transcript {
   id: string;
@@ -68,10 +71,12 @@ const ConversationModal = ({
   isOpen,
   onClose,
   transcript,
+  toast,
 }: {
   isOpen: boolean;
   onClose: () => void;
   transcript: Transcript | null;
+  toast: (options: { title: string; description: string }) => void;
 }) => {
   if (!transcript) return null;
 
@@ -83,6 +88,17 @@ const ConversationModal = ({
       const text = rest.join(": ");
       return { id: index, speaker: speaker.trim(), text };
     });
+
+  const handleCopy = () => {
+    const transcriptText = parsedTranscript
+      .map((line) => `${line.speaker}: ${line.text}`)
+      .join("\n");
+    navigator.clipboard.writeText(transcriptText);
+    toast({
+      title: "Copied!",
+      description: "The transcript has been copied to your clipboard.",
+    });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -124,6 +140,12 @@ const ConversationModal = ({
             </div>
           ))}
         </div>
+        <DialogFooter>
+          <Button onClick={handleCopy}>
+            <Copy className="h-4 w-4 mr-2" />
+            Copy
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
@@ -131,6 +153,7 @@ const ConversationModal = ({
 
 const Transcripts = () => {
   const { admin, loading: adminLoading } = useExpert();
+  const { toast } = useToast();
   const [transcripts, setTranscripts] = useState<Transcript[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -156,7 +179,14 @@ const Transcripts = () => {
         }
         const result = await response.json();
         if (result.success) {
-          setTranscripts(result.data);
+          const updatedTranscripts = result.data.map(
+            (transcript: Transcript) => ({
+              ...transcript,
+              status:
+                transcript.status === "ended" ? "completed" : transcript.status,
+            })
+          );
+          setTranscripts(updatedTranscripts);
         } else {
           console.error("Failed to fetch transcripts:", result.error);
         }
@@ -194,6 +224,8 @@ const Transcripts = () => {
         return "bg-success text-success-foreground";
       case "ended":
         return "bg-primary text-primary-foreground";
+      case "completed":
+        return "bg-primary text-primary-foreground";
       case "needs_review":
         return "bg-warning text-warning-foreground";
       case "processing":
@@ -208,6 +240,8 @@ const Transcripts = () => {
       case "approved":
         return <Star className="h-3 w-3" />;
       case "ended":
+        return <FileText className="h-3 w-3" />;
+      case "completed":
         return <FileText className="h-3 w-3" />;
       case "needs_review":
         return <Eye className="h-3 w-3" />;
@@ -230,16 +264,6 @@ const Transcripts = () => {
             <p className="text-muted-foreground">
               View, manage, and process interview transcripts
             </p>
-          </div>
-          <div className="flex space-x-2">
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2" />
-              Export All
-            </Button>
-            <Button>
-              <FileText className="h-4 w-4 mr-2" />
-              Upload Transcript
-            </Button>
           </div>
         </div>
 
@@ -270,7 +294,7 @@ const Transcripts = () => {
                   {
                     transcripts.filter(
                       (t) =>
-                        t.status === "ended" &&
+                        t.status === "completed" &&
                         t.ended_reason !==
                           "call.in-progress.error-providerfault-outbound-sip-503-service-unavailable"
                     ).length
@@ -299,7 +323,7 @@ const Transcripts = () => {
               </div>
             </div>
           </Card>
-
+          {/* 
           <Card className="p-4">
             <div className="flex items-center space-x-2">
               <div className="p-2 bg-accent rounded-lg">
@@ -323,7 +347,7 @@ const Transcripts = () => {
                 </p>
               </div>
             </div>
-          </Card>
+          </Card> */}
         </div>
 
         {/* Filters */}
@@ -348,17 +372,8 @@ const Transcripts = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="ended">Ended</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
                 <SelectItem value="in-progress">In Progress</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Filter by campaign" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Campaigns</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -471,7 +486,11 @@ const Transcripts = () => {
 
                   <div className="text-sm">
                     <p className="font-medium">Status</p>
-                    <p className="text-muted-foreground">{transcript.status}</p>
+                    <p className="text-muted-foreground">
+                      {transcript.status === "ended"
+                        ? "completed"
+                        : transcript.status}
+                    </p>
                   </div>
 
                   <div className="text-sm">
@@ -480,8 +499,7 @@ const Transcripts = () => {
                       {new Date(transcript.created_at).toLocaleDateString()}
                     </p>
                   </div>
-
-                  <div className="text-sm">
+                  {/* <div className="text-sm">
                     <p className="font-medium">Total Cost</p>
                     <p className="text-muted-foreground">
                       $
@@ -492,7 +510,7 @@ const Transcripts = () => {
                         ) || 0
                       ).toFixed(4)}
                     </p>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Key Insights */}
@@ -527,7 +545,7 @@ const Transcripts = () => {
                     <Download className="h-4 w-4 mr-2" />
                     Export
                   </Button> */}
-                  {transcript.status === "ended" && (
+                  {transcript.status === "completed" && (
                     <Button
                       size="sm"
                       variant="outline"
@@ -547,6 +565,7 @@ const Transcripts = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         transcript={selectedTranscript}
+        toast={toast}
       />
     </div>
   );

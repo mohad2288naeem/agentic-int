@@ -20,6 +20,10 @@
     --primary-foreground: 0 0% 100%;
     --primary-light: 214 95% 93%;
 
+    /* Gradient colors for buttons */
+    --gradient-start: 214 84% 56%; /* Same as primary */
+    --gradient-end: 260 84% 60%; /* Light purple */
+
     /* Secondary colors for accents */
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;

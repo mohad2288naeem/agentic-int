@@ -50,7 +50,7 @@ export function AppSidebar() {
 
   const getNavClassName = (path: string) =>
     isActive(path)
-      ? "bg-primary text-primary-foreground font-medium"
+      ? "bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground font-medium"
       : "hover:bg-accent hover:text-accent-foreground";
 
   return (
@@ -62,7 +62,7 @@ export function AppSidebar() {
             collapsed ? "justify-center px-0" : "space-x-3 px-2"
           }`}
         >
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-gradient-to-r from-gradient-start to-gradient-end rounded-lg flex items-center justify-center">
             <Phone className="h-4 w-4 text-primary-foreground" />
           </div>
           {!collapsed && (

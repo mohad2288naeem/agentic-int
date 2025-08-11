@@ -119,6 +119,7 @@ export function ExpertProvider({ children }: { children: ReactNode }) {
       });
       const data = await response.json();
       setScheduledCalls((prev) => [...prev, data]);
+      await fetchExperts(); // Refetch experts to update the list
     } catch (error) {
       console.error("Error adding scheduled call:", error);
       throw error;

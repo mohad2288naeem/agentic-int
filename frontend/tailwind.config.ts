@@ -1,4 +1,5 @@
-import type { Config } from "tailwindcss";
+import { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
 	darkMode: ["class"],
@@ -45,6 +46,12 @@ export default {
 					DEFAULT: 'hsl(var(--accent))',
 					foreground: 'hsl(var(--accent-foreground))'
 				},
+				"gradient-start": {
+					DEFAULT: "hsl(var(--gradient-start))",
+				  },
+				  "gradient-end": {
+					DEFAULT: "hsl(var(--gradient-end))",
+				  },
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
 					foreground: 'hsl(var(--popover-foreground))'
@@ -102,5 +109,5 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [tailwindcssAnimate],
 } satisfies Config;
