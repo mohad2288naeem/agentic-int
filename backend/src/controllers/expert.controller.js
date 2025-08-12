@@ -10,9 +10,10 @@ const getExperts = async (req, res) => {
 };
 exports.getExperts = getExperts;
 const createExpert = async (req, res) => {
-    const { name, email, phone, specialty, location, status } = req.body;
+    console.log("Received request to create expert with body:", req.body);
+    const { name, email, phone, specialty, location, status, assistant_id } = req.body;
     const { data, error } = await supabase_service_1.supabase.from('experts').insert([
-        { name, email, phone, specialty, location, status: status || 'available' }
+        { name, email, phone, specialty, location, status: status || 'available', assistant_id }
     ]).select().single();
     if (error)
         return res.status(500).json({ error: error.message });

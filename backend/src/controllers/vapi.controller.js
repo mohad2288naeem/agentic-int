@@ -3,7 +3,7 @@ const { supabase } = require('../services/supabase.service');
 const { pollCallStatus } = require('../cron/jobs'); // ✅ ADD THIS
 
 const VAPI_API_KEY = "d54b7858-f078-4b2e-9099-a47f0d46f86b";
-const VAPI_ASSISTANT_ID = "56a8c116-17c9-4b86-b5f3-89045e58ff4c";
+const VAPI_ASSISTANT_ID = "38e9b878-03d0-44ef-9d34-4337fc5d226";
 const VAPI_PHONE_NUMBER_ID = "3e749354-aedf-4088-8470-972f289fec66";
 
 // const makeCall = async (req, res) => {
@@ -112,7 +112,7 @@ const VAPI_PHONE_NUMBER_ID = "3e749354-aedf-4088-8470-972f289fec66";
 
 const makeCall = async (req, res) => {
     try {
-        const { name, number, admin_id, scheduled_call_id } = req.body;
+        const { name, number, admin_id, scheduled_call_id, assistant_id } = req.body;
 
         if (!number || !admin_id || !scheduled_call_id) {
             return res.status(400).json({ success: false, message: "Missing 'number', 'admin_id', or 'scheduled_call_id'" });
@@ -122,7 +122,7 @@ const makeCall = async (req, res) => {
 
         const payload = {
             phoneNumberId: VAPI_PHONE_NUMBER_ID,
-            assistantId: VAPI_ASSISTANT_ID,
+            assistantId: assistant_id || VAPI_ASSISTANT_ID,
             customer: {
                 name: name || "User",
                 number

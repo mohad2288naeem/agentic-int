@@ -1,5 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useExpert } from "@/contexts/ExpertContext";
@@ -13,6 +21,7 @@ interface Transcript {
       name?: string;
     };
   };
+  transcript: string;
 }
 
 interface TranscriptsListProps {
@@ -32,6 +41,8 @@ export const TranscriptsList = ({ className }: TranscriptsListProps) => {
   const { admin, loading: adminLoading } = useExpert();
   const [transcripts, setTranscripts] = useState<Transcript[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTranscript, setSelectedTranscript] =
+    useState<Transcript | null>(null);
 
   useEffect(() => {
     const fetchTranscripts = async () => {
@@ -68,55 +79,94 @@ export const TranscriptsList = ({ className }: TranscriptsListProps) => {
     }
   }, [admin, adminLoading]);
 
-  return (
-    <Card className={`p-6 ${className}`}>
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-foreground">
-          Latest Interview Transcripts
-        </h3>
+  const handleTranscriptClick = (transcript: Transcript) => {
+    setSelectedTranscript(transcript);
+  };
 
-        <div className="space-y-4 max-h-96 overflow-y-auto overflow-x-hidden">
-          {loading ? (
-            <p className="text-muted-foreground">Loading transcripts...</p>
-          ) : transcripts.length > 0 ? (
-            transcripts.map((transcript) => (
-              <Button
-                key={transcript.id}
-                variant="ghost"
-                className="w-full h-auto p-4 justify-start hover:bg-accent/50 transition-colors"
-              >
-                <div className="w-full text-left space-y-2">
-                  <div className="flex items-start space-x-3">
-                    <FileText className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <div className="flex-1 min-w-0 overflow-hidden">
-                      <h4 className="font-medium text-foreground truncate">
-                        Interview with{" "}
-                        {transcript.raw_data?.customer?.name || "Unknown"}
-                      </h4>
-                      <p className="text-sm text-muted-foreground whitespace-normal">
-                        {truncateSummary(transcript.summary, 35)}
-                      </p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
-                        <span>
-                          {transcript.raw_data?.customer?.name ||
-                            "Unknown Candidate"}
-                        </span>
-                        <span>
-                          {new Date(transcript.created_at).toLocaleDateString()}
-                        </span>
+  const handleCloseModal = () => {
+    setSelectedTranscript(null);
+  };
+
+  return (
+    <>
+      <Card className={`p-6 ${className}`}>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-foreground">
+            Latest Interview Transcripts
+          </h3>
+
+          <div className="space-y-4 max-h-96 overflow-y-auto overflow-x-hidden">
+            {loading ? (
+              <p className="text-muted-foreground">Loading transcripts...</p>
+            ) : transcripts.length > 0 ? (
+              transcripts.map((transcript) => (
+                <Button
+                  key={transcript.id}
+                  variant="ghost"
+                  className="w-full h-auto p-4 justify-start hover:bg-accent/50 transition-colors"
+                  onClick={() => handleTranscriptClick(transcript)}
+                >
+                  <div className="w-full text-left space-y-2">
+                    <div className="flex items-start space-x-3">
+                      <FileText className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
+                      <div className="flex-1 min-w-0 overflow-hidden">
+                        <h4 className="font-medium text-foreground truncate">
+                          Interview with{" "}
+                          {transcript.raw_data?.customer?.name || "Unknown"}
+                        </h4>
+                        <p className="text-sm text-muted-foreground whitespace-normal">
+                          {truncateSummary(transcript.summary, 35)}
+                        </p>
+                        <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
+                          <span>
+                            {transcript.raw_data?.customer?.name ||
+                              "Unknown Candidate"}
+                          </span>
+                          <span>
+                            {new Date(
+                              transcript.created_at
+                            ).toLocaleDateString()}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Button>
-            ))
-          ) : (
-            <p className="text-muted-foreground">
-              No recent transcripts with summaries available.
-            </p>
-          )}
+                </Button>
+              ))
+            ) : (
+              <p className="text-muted-foreground">
+                No recent transcripts with summaries available.
+              </p>
+            )}
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+      {selectedTranscript && (
+        <Dialog open={!!selectedTranscript} onOpenChange={handleCloseModal}>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>
+                Interview with{" "}
+                {selectedTranscript.raw_data?.customer?.name || "Unknown"}
+              </DialogTitle>
+              <DialogDescription>
+                Full transcript from the interview conducted on{" "}
+                {new Date(selectedTranscript.created_at).toLocaleDateString()}.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="mt-4 max-h-[60vh] overflow-y-auto pr-4 space-y-4">
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                {selectedTranscript.transcript}
+              </p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={handleCloseModal}>
+                Dismiss
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 };

@@ -95,6 +95,7 @@ const Experts = () => {
           number: expert.phone,
           admin_id: admin.id,
           scheduled_call_id: scheduledCall.id,
+          assistant_id: expert.assistant_id,
         }),
       });
 
@@ -138,7 +139,7 @@ const Experts = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "available":
-        return "bg-success/50 text-success-foreground";
+        return "bg-blue-500 text-success-foreground";
       case "busy":
         return "bg-warning text-warning-foreground";
       case "offline":

@@ -58,6 +58,9 @@ interface AssistantPayload {
     voiceId: string;
   };
   firstMessage: string;
+  backgroundSound: string;
+  endCallMessage: string;
+  endCallPhrases: string[];
 }
 
 const CreateAssistantForm = ({
@@ -67,7 +70,6 @@ const CreateAssistantForm = ({
 }) => {
   const [assistantName, setAssistantName] = useState("");
   const [model, setModel] = useState("gpt-3.5-turbo");
-  const [voice, setVoice] = useState("brian");
   const [firstMessage, setFirstMessage] = useState("");
   const [systemPrompt, setSystemPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,7 +79,6 @@ const CreateAssistantForm = ({
     setAssistantName("");
     setSystemPrompt("");
     setModel("gpt-3.5-turbo");
-    setVoice("brian");
     setFirstMessage("");
   };
 
@@ -93,10 +94,13 @@ const CreateAssistantForm = ({
         messages: [],
       },
       voice: {
-        provider: "azure",
-        voiceId: "brian",
+        provider: "vapi",
+        voiceId: "Elliot",
       },
       firstMessage: firstMessage,
+      backgroundSound: "off",
+      endCallMessage: "Goodbye",
+      endCallPhrases: ["bye", "ok bye"],
     };
 
     if (systemPrompt) {
@@ -185,19 +189,6 @@ const CreateAssistantForm = ({
           </CardDescription>
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="voice">Voice</Label>
-            <Select value={voice} onValueChange={setVoice}>
-              <SelectTrigger id="voice">
-                <SelectValue placeholder="Select a voice" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-100">
-                <SelectItem value="brian">Brian (11 Labs)</SelectItem>
-                <SelectItem value="emma">Emma (11 Labs)</SelectItem>
-                <SelectItem value="andrew">Andrew (11 Labs)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
           <div className="space-y-2">
             <Label htmlFor="model">Language Model</Label>
             <Select value={model} onValueChange={setModel}>

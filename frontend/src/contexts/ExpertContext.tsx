@@ -19,6 +19,7 @@ export interface Expert {
   last_interview: string;
   avatar?: string;
   scheduledCalls?: ScheduledCall[];
+  assistant_id?: string;
 }
 
 export interface ScheduledCall {

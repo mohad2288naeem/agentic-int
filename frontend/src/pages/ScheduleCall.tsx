@@ -62,6 +62,7 @@ interface CallFormData {
   interviewDate: string;
   interviewTime: string;
   notes: string;
+  assistantId: string;
 }
 
 const ScheduleCallForm = () => {
@@ -69,6 +70,7 @@ const ScheduleCallForm = () => {
   const { toast } = useToast();
   const { admin, addScheduledCall } = useExpert();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [assistants, setAssistants] = useState<Assistant[]>([]);
   const [formData, setFormData] = useState<CallFormData>({
     expertName: "",
     expertEmail: "",
@@ -78,7 +80,25 @@ const ScheduleCallForm = () => {
     interviewDate: "",
     interviewTime: "",
     notes: "",
+    assistantId: "",
   });
+
+  useEffect(() => {
+    const fetchAssistants = async () => {
+      try {
+        const response = await fetch("/api/vapi/assistants");
+        const result = await response.json();
+        if (response.ok) {
+          setAssistants(result.data);
+        } else {
+          console.error("Failed to fetch assistants");
+        }
+      } catch (error) {
+        console.error("Error fetching assistants", error);
+      }
+    };
+    fetchAssistants();
+  }, []);
 
   const handleInputChange = (field: keyof CallFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -116,6 +136,7 @@ const ScheduleCallForm = () => {
           specialty: formData.specialty,
           location: formData.location,
           status: "available",
+          assistant_id: formData.assistantId,
         }),
       });
 
@@ -153,6 +174,7 @@ const ScheduleCallForm = () => {
         interviewDate: "",
         interviewTime: "",
         notes: "",
+        assistantId: "",
       });
 
       navigate("/experts");
@@ -253,6 +275,25 @@ const ScheduleCallForm = () => {
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="assistant">Assistant</Label>
+            <Select
+              value={formData.assistantId}
+              onValueChange={(value) => handleInputChange("assistantId", value)}
+            >
+              <SelectTrigger id="assistant" className="bg-gray-100">
+                <SelectValue placeholder="Select an assistant" />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-300">
+                {assistants.map((assistant) => (
+                  <SelectItem key={assistant.id} value={assistant.id}>
+                    {assistant.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="interviewDate">Interview Date *</Label>
@@ -267,7 +308,9 @@ const ScheduleCallForm = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="interviewTime">Interview Time</Label>
+              <Label htmlFor="interviewTime">
+                Interview Time <span className="text-gray-400">(UTC-5)</span>
+              </Label>
               <Input
                 id="interviewTime"
                 type="time"
