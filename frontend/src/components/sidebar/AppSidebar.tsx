@@ -31,7 +31,7 @@ import { Card } from "@/components/ui/card";
 const navigationItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Schedule Call", url: "/schedule-call", icon: Phone },
-  { title: "Experts", url: "/experts", icon: Users },
+  { title: "Appointments", url: "/experts", icon: Users },
   // { title: "Campaigns", url: "/campaigns", icon: FolderOpen },
   { title: "Transcripts", url: "/transcripts", icon: FileText },
   { title: "Assistants", url: "/assistants", icon: Bot },
